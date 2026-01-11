@@ -407,18 +407,98 @@ def about():
     return render_template('about.html')
 
 
+# ============ FAVICON ROUTE ============
+@app.route('/favicon.ico')
+def favicon():
+    """
+    Handle favicon requests to prevent 404 errors
+    Returns 204 No Content
+    """
+    return '', 204
+
+
 # ============ ERROR HANDLERS ============
 @app.errorhandler(404)
 def not_found_error(error):
-    """Handle 404 errors"""
-    return render_template('404.html'), 404
+    """
+    Handle 404 errors - Page Not Found
+    """
+    return '''
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>404 - Page Not Found</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+                <div class="col-md-6 text-center">
+                    <i class="bi bi-exclamation-triangle-fill display-1 text-warning"></i>
+                    <h1 class="mt-4 display-1">404</h1>
+                    <h2>Page Not Found</h2>
+                    <p class="lead text-muted">
+                        Sorry, the page you're looking for doesn't exist.
+                    </p>
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-primary">
+                            <i class="bi bi-house-door"></i> Go Home
+                        </a>
+                        <a href="javascript:history.back()" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Go Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    ''', 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Handle 500 errors"""
+    """
+    Handle 500 errors - Internal Server Error
+    """
     db.session.rollback()
-    return render_template('500.html'), 500
+    return '''
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>500 - Server Error</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+                <div class="col-md-6 text-center">
+                    <i class="bi bi-exclamation-circle-fill display-1 text-danger"></i>
+                    <h1 class="mt-4 display-1">500</h1>
+                    <h2>Internal Server Error</h2>
+                    <p class="lead text-muted">
+                        Oops! Something went wrong on our end. We're working to fix it.
+                    </p>
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-primary">
+                            <i class="bi bi-house-door"></i> Go Home
+                        </a>
+                        <a href="javascript:location.reload()" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    ''', 500
 
 
 # ============ RUN APPLICATION ============
