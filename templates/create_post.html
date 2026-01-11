@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Create Post - ArticleHub{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <!-- Page Header -->
+                        <div class="mb-4">
+                            <h2>
+                                <i class="bi bi-plus-circle"></i> Create New Post
+                            </h2>
+                            <p class="text-muted">Share your story with the community</p>
+                        </div>
+
+                        <!-- Create Post Form -->
+                        <form method="POST" action="" novalidate id="postForm">
+                            {{ form.hidden_tag() }}
+
+                            <!-- Title Field -->
+                            <div class="mb-3">
+                                {{ form.title.label(class="form-label") }}
+                                {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""),
+                                placeholder="Enter an engaging title...") }}
+                                {% if form.title.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.title.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted">A good title is clear and descriptive (5-200
+                                    characters)</small>
+                            </div>
+
+                            <!-- Category Field -->
+                            <div class="mb-3">
+                                {{ form.category.label(class="form-label") }}
+                                {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else ""))
+                                }}
+                                {% if form.category.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.category.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Content Field -->
+                            <div class="mb-3">
+                                {{ form.content.label(class="form-label") }}
+                                {{ form.content(class="form-control" + (" is-invalid" if form.content.errors else ""),
+                                rows="12", placeholder="Write your article here...", id="postContent") }}
+                                {% if form.content.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.content.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <span id="charCount">0</span> characters (minimum 20 required)
+                                </small>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2">
+                                {{ form.submit(class="btn btn-primary") }}
+                                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Writing Tips Card -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5><i class="bi bi-lightbulb"></i> Writing Tips</h5>
+                        <ul class="mb-0">
+                            <li>Start with a compelling introduction</li>
+                            <li>Use clear and concise language</li>
+                            <li>Break content into paragraphs for readability</li>
+                            <li>Proofread before publishing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
