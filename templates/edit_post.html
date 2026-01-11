@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post - ArticleHub{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <!-- Page Header -->
+                        <div class="mb-4">
+                            <h2>
+                                <i class="bi bi-pencil-square"></i> Edit Post
+                            </h2>
+                            <p class="text-muted">Update your article</p>
+                        </div>
+
+                        <!-- Edit Post Form -->
+                        <form method="POST" action="" novalidate id="postForm">
+                            {{ form.hidden_tag() }}
+
+                            <!-- Title Field -->
+                            <div class="mb-3">
+                                {{ form.title.label(class="form-label") }}
+                                {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+                                {% if form.title.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.title.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Category Field -->
+                            <div class="mb-3">
+                                {{ form.category.label(class="form-label") }}
+                                {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else ""))
+                                }}
+                                {% if form.category.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.category.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Content Field -->
+                            <div class="mb-3">
+                                {{ form.content.label(class="form-label") }}
+                                {{ form.content(class="form-control" + (" is-invalid" if form.content.errors else ""),
+                                rows="12", id="postContent") }}
+                                {% if form.content.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.content.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <span id="charCount">0</span> characters
+                                </small>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2">
+                                {{ form.submit(class="btn btn-primary") }}
+                                <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
