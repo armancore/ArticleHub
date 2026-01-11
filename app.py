@@ -8,7 +8,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Configuration
-app.config['SECRET_KEY'] = 'your-secret-key-here-change-in-production'
+app.config['SECRET_KEY'] = '4302bbe147749caf128d261630e5c67a2e7a9e545ac1d3e86813abe591cd9d5e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

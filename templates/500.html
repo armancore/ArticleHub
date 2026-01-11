@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <i class="bi bi-exclamation-circle-fill display-1 text-danger"></i>
+                <h1 class="mt-4">500</h1>
+                <h2>Internal Server Error</h2>
+                <p class="lead text-muted">
+                    Oops! Something went wrong on our end. We're working to fix it.
+                </p>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="bi bi-house-door"></i> Go Home
+                    </a>
+                    <a href="javascript:location.reload()" class="btn btn-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh Page
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
