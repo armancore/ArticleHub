@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }}'s Profile - ArticleHub{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <i class="bi bi-person-circle display-1 text-primary"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <h2>{{ user.username }}</h2>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-envelope"></i> {{ user.email }}
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-calendar"></i> Joined {{ user.created_at.strftime('%B %Y') }}
+                                </p>
+                                <p class="mb-0">{{ user.bio }}</p>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                {% if current_user.is_authenticated and current_user.id == user.id %}
+                                <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i> Edit Profile
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-primary">{{ posts|length }}</h3>
+                        <p class="mb-0 text-muted">Posts</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-success">{{ user.comments|length }}</h3>
+                        <p class="mb-0 text-muted">Comments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-info">Active</h3>
+                        <p class="mb-0 text-muted">Status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User's Posts -->
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="mb-3">
+                    <i class="bi bi-file-earmark-text"></i> Posts by {{ user.username }}
+                </h4>
+
+                {% if posts %}
+                <div class="row">
+                    {% for post in posts %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <span class="badge bg-primary mb-2">{{ post.category }}</span>
+                                <h5 class="card-title">
+                                    <a href="{{ url_for('post_detail', post_id=post.id) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ post.title }}
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted">
+                                    {{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> {{ post.created_at.strftime('%b %d, %Y') }}
+                                </small>
+                                <small class="text-muted float-end">
+                                    <i class="bi bi-chat"></i> {{ post.comments|length }} comments
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h5 class="mt-3">No posts yet</h5>
+                    <p class="text-muted">{{ user.username }} hasn't published any posts.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
