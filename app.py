@@ -420,13 +420,14 @@ def favicon():
 # ============ ERROR HANDLERS ============
 @app.errorhandler(404)
 def not_found_error(error):
-       return  404
+    """Handle 404 errors"""
+    return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-       
+    """Handle 500 errors"""
     db.session.rollback()
-    return  500
+    return render_template('500.html'), 500
 
 
 # ============ RUN APPLICATION ============
