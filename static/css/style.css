@@ -109,16 +109,62 @@ html {
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: 700;
+    color: #ffffff !important;
+}
+
+.navbar-brand:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .nav-link {
     font-weight: 500;
     padding: 0.5rem 1rem !important;
     transition: color 0.3s ease;
+    color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .nav-link:hover {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: #ffffff !important;
+}
+
+.nav-link:focus {
+    color: #ffffff !important;
+}
+
+/* Active nav link */
+.nav-link.active {
+    color: #ffffff !important;
+}
+
+/* Navbar toggler for mobile */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.85)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Active nav link */
+.nav-link.active {
+    color: #ffffff !important;
+}
+
+/* Navbar toggler for mobile */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.85)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /* Badge Styling */
