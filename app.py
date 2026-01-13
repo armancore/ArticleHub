@@ -382,20 +382,78 @@ def edit_profile():
 @app.route('/search')
 def search():
     """
-    Search for posts by title or content
+    Advanced search for posts with multiple filters
     """
-    # Get search query from URL
-    query = request.args.get('q', '')
+    # Get search parameters from URL
+    query = request.args.get('q', '').strip()
+    category = request.args.get('category', '')
+    author = request.args.get('author', '').strip()
+    date_from = request.args.get('date_from', '')
+    date_to = request.args.get('date_to', '')
+    sort_by = request.args.get('sort', 'newest')
     
+    # Start with base query
+    posts_query = Post.query
+    
+    # Filter by keyword (title or content)
     if query:
-        # Search in title and content
-        posts = Post.query.filter(
+        posts_query = posts_query.filter(
             (Post.title.contains(query)) | (Post.content.contains(query))
-        ).order_by(Post.created_at.desc()).all()
-    else:
-        posts = []
+        )
     
-    return render_template('search.html', posts=posts, query=query)
+    # Filter by category
+    if category and category != 'All':
+        posts_query = posts_query.filter_by(category=category)
+    
+    # Filter by author username
+    if author:
+        posts_query = posts_query.join(User).filter(User.username.contains(author))
+    
+    # Filter by date range
+    if date_from:
+        try:
+            date_from_obj = datetime.strptime(date_from, '%Y-%m-%d')
+            posts_query = posts_query.filter(Post.created_at >= date_from_obj)
+        except ValueError:
+            pass
+    
+    if date_to:
+        try:
+            date_to_obj = datetime.strptime(date_to, '%Y-%m-%d')
+            # Add one day to include the entire end date
+            from datetime import timedelta
+            date_to_obj = date_to_obj + timedelta(days=1)
+            posts_query = posts_query.filter(Post.created_at < date_to_obj)
+        except ValueError:
+            pass
+    
+    # Apply sorting
+    if sort_by == 'oldest':
+        posts_query = posts_query.order_by(Post.created_at.asc())
+    elif sort_by == 'popular':
+        # Sort by number of comments (most popular)
+        from sqlalchemy import func
+        posts_query = posts_query.outerjoin(Comment)\
+                                 .group_by(Post.id)\
+                                 .order_by(func.count(Comment.id).desc())
+    else:  # newest (default)
+        posts_query = posts_query.order_by(Post.created_at.desc())
+    
+    # Execute query
+    posts = posts_query.all()
+    
+    # Count results
+    result_count = len(posts)
+    
+    return render_template('search.html', 
+                         posts=posts, 
+                         query=query,
+                         selected_category=category,
+                         selected_author=author,
+                         date_from=date_from,
+                         date_to=date_to,
+                         sort_by=sort_by,
+                         result_count=result_count)
 
 
 # ============ ABOUT PAGE ROUTE ============
