@@ -6,8 +6,6 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
 
 **A full-stack blog platform built with Flask, featuring user authentication, CRUD operations, and advanced search capabilities.**
 
@@ -29,10 +27,8 @@
 - [Project Structure](#-project-structure)
 - [API Routes](#-api-routes)
 - [Bonus Features](#-bonus-features)
-- [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
-- [License](#-license)
 - [Contact](#-contact)
 - [Acknowledgments](#-acknowledgments)
 
