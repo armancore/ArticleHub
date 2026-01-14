@@ -146,43 +146,43 @@ ArticleHub is a modern, responsive blog platform that allows users to create, sh
 
 ### Homepage
 
-![Homepage](https://via.placeholder.com/800x500/0d6efd/ffffff?text=Homepage+-+Browse+All+Posts)
+![Homepage](screenshots/homepage.png)
 
 _Browse all blog posts with category filters and pagination_
 
 ### Post Detail Page
 
-![Post Detail](https://via.placeholder.com/800x500/198754/ffffff?text=Post+Detail+-+Read+%26+Comment)
+![Post Detail](screenshots/post-detail.png)
 
 _Read full articles and engage in discussions through comments_
 
 ### User Dashboard
 
-![Dashboard](https://via.placeholder.com/800x500/ffc107/000000?text=Dashboard+-+Manage+Your+Posts)
+![Dashboard](screenshots/dashboard.png)
 
 _Manage all your posts in one place - edit or delete with ease_
 
 ### Advanced Search
 
-![Advanced Search](https://via.placeholder.com/800x500/dc3545/ffffff?text=Advanced+Search+-+Find+Posts+Fast)
+![Advanced Search](screenshots/search.png)
 
 _Powerful search with filters: keyword, category, author, date range, and sorting_
 
 ### User Profile
 
-![User Profile](https://via.placeholder.com/800x500/6f42c1/ffffff?text=User+Profile+-+View+Author+Info)
+![User Profile](screenshots/user-profile.png)
 
 _View user profiles and all their published articles_
 
 ### Registration Page
 
-![Registration](https://via.placeholder.com/800x500/fd7e14/ffffff?text=Registration+-+Create+Account)
+![Registration](screenshots/registration.png)
 
 _Secure user registration with form validation_
 
 ### Mobile Responsive
 
-![Mobile View](https://via.placeholder.com/400x700/20c997/ffffff?text=Mobile+Responsive+Design)
+![Mobile View](screenshots/mobile.png)
 
 _Fully responsive design works on all devices_
 
