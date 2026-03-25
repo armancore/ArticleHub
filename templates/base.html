@@ -65,6 +65,17 @@
                             <i class="bi bi-person-circle"></i> Profile
                         </a>
                     </li>
+
+                    <!-- Admin Link (only visible to admins) -->
+                    {% if current_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_panel') }}"
+                            style="color: #ffd166 !important; font-weight: 700;">
+                            <i class="bi bi-shield-fill-check"></i> Admin
+                        </a>
+                    </li>
+                    {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">
                             <i class="bi bi-box-arrow-right"></i> Logout
@@ -88,20 +99,19 @@
         </div>
     </nav>
 
-    <!-- Flash Messages - Shows success/error messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
-    <!-- Main Content - Each page puts content here -->
+    <!-- Main Content -->
     <main>
         {% block content %}{% endblock %}
     </main>
@@ -126,6 +136,10 @@
                         {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('dashboard') }}"
                                 class="text-white-50 text-decoration-none">Dashboard</a></li>
+                        {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin_panel') }}" class="text-white-50 text-decoration-none">Admin
+                                Panel</a></li>
+                        {% endif %}
                         {% else %}
                         <li><a href="{{ url_for('register') }}" class="text-white-50 text-decoration-none">Register</a>
                         </li>
@@ -152,7 +166,8 @@
             <!-- Copyright -->
             <hr class="bg-white">
             <div class="text-center">
-                <p class="mb-0 small">&copy; 2026 ArticleHub. All rights reserved. | Built with Flask & Bootstrap by Arman Khan</p>
+                <p class="mb-0 small">&copy; 2026 ArticleHub. All rights reserved. | Built with Flask & Bootstrap by
+                    Arman Khan</p>
             </div>
         </div>
     </footer>

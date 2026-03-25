@@ -1,0 +1,737 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - ArticleHub{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --admin-bg: #0f1117;
+        --admin-surface: #1a1d27;
+        --admin-surface-2: #22263a;
+        --admin-border: rgba(255, 255, 255, 0.07);
+        --admin-accent: #6c63ff;
+        --admin-accent-2: #00d4aa;
+        --admin-accent-3: #ff6b6b;
+        --admin-accent-4: #ffd166;
+        --admin-text: #e8eaf0;
+        --admin-muted: #7a7f99;
+        --admin-danger: #ff4757;
+    }
+
+    .admin-wrapper {
+        min-height: 100vh;
+        background: var(--admin-bg);
+        color: var(--admin-text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        padding: 2rem;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--admin-border);
+    }
+
+    .admin-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin: 0;
+        background: linear-gradient(135deg, #fff 0%, var(--admin-accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .admin-header .badge-admin {
+        background: linear-gradient(135deg, var(--admin-accent), #9b59b6);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+    }
+
+    /* ── Stat Cards ── */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: var(--admin-surface);
+        border: 1px solid var(--admin-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(108, 99, 255, 0.4);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .stat-card.users::before {
+        background: linear-gradient(90deg, var(--admin-accent), #9b59b6);
+    }
+
+    .stat-card.posts::before {
+        background: linear-gradient(90deg, var(--admin-accent-2), #00b8d9);
+    }
+
+    .stat-card.comments::before {
+        background: linear-gradient(90deg, var(--admin-accent-4), #ff9f43);
+    }
+
+    .stat-card.activity::before {
+        background: linear-gradient(90deg, var(--admin-accent-3), #ee5a24);
+    }
+
+    .stat-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .stat-card.users .stat-icon {
+        color: var(--admin-accent);
+    }
+
+    .stat-card.posts .stat-icon {
+        color: var(--admin-accent-2);
+    }
+
+    .stat-card.comments .stat-icon {
+        color: var(--admin-accent-4);
+    }
+
+    .stat-card.activity .stat-icon {
+        color: var(--admin-accent-3);
+    }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.3rem;
+        color: #fff;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--admin-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+    }
+
+    /* ── Tab Navigation ── */
+    .admin-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.75rem;
+        background: var(--admin-surface);
+        padding: 0.4rem;
+        border-radius: 12px;
+        width: fit-content;
+        border: 1px solid var(--admin-border);
+    }
+
+    .admin-tab {
+        padding: 0.55rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: var(--admin-muted);
+        transition: all 0.2s;
+    }
+
+    .admin-tab.active {
+        background: var(--admin-accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4);
+    }
+
+    .admin-tab:hover:not(.active) {
+        color: var(--admin-text);
+        background: var(--admin-surface-2);
+    }
+
+    /* ── Panels ── */
+    .admin-panel {
+        display: none;
+    }
+
+    .admin-panel.active {
+        display: block;
+    }
+
+    /* ── Table ── */
+    .admin-table-wrap {
+        background: var(--admin-surface);
+        border: 1px solid var(--admin-border);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .admin-table-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--admin-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .admin-table-header h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+        color: #fff;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table thead th {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--admin-muted);
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid var(--admin-border);
+        text-align: left;
+    }
+
+    .admin-table tbody tr {
+        border-bottom: 1px solid var(--admin-border);
+        transition: background 0.15s;
+    }
+
+    .admin-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .admin-table tbody tr:hover {
+        background: rgba(108, 99, 255, 0.06);
+    }
+
+    .admin-table tbody td {
+        padding: 1rem 1.5rem;
+        font-size: 0.88rem;
+        color: var(--admin-text);
+        vertical-align: middle;
+    }
+
+    /* ── Avatars & Chips ── */
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--admin-accent), #9b59b6);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #fff;
+        margin-right: 0.6rem;
+        flex-shrink: 0;
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+    }
+
+    .chip {
+        display: inline-block;
+        padding: 0.2rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+    }
+
+    .chip-tech {
+        background: rgba(0, 212, 170, 0.15);
+        color: var(--admin-accent-2);
+    }
+
+    .chip-lifestyle {
+        background: rgba(255, 209, 102, 0.15);
+        color: var(--admin-accent-4);
+    }
+
+    .chip-travel {
+        background: rgba(108, 99, 255, 0.15);
+        color: var(--admin-accent);
+    }
+
+    .chip-food {
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--admin-accent-3);
+    }
+
+    .chip-health {
+        background: rgba(46, 213, 115, 0.15);
+        color: #2ed573;
+    }
+
+    .chip-business {
+        background: rgba(30, 144, 255, 0.15);
+        color: #1e90ff;
+    }
+
+    .chip-entertainment {
+        background: rgba(255, 165, 0, 0.15);
+        color: orange;
+    }
+
+    .chip-other {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--admin-muted);
+    }
+
+    /* ── Action Buttons ── */
+    .btn-admin {
+        padding: 0.3rem 0.75rem;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-admin-danger {
+        background: rgba(255, 71, 87, 0.15);
+        color: var(--admin-danger);
+        border: 1px solid rgba(255, 71, 87, 0.25);
+    }
+
+    .btn-admin-danger:hover {
+        background: var(--admin-danger);
+        color: #fff;
+        border-color: var(--admin-danger);
+    }
+
+    .btn-admin-edit {
+        background: rgba(255, 209, 102, 0.12);
+        color: var(--admin-accent-4);
+        border: 1px solid rgba(255, 209, 102, 0.2);
+    }
+
+    .btn-admin-edit:hover {
+        background: var(--admin-accent-4);
+        color: #1a1d27;
+        border-color: var(--admin-accent-4);
+    }
+
+    .btn-admin-view {
+        background: rgba(108, 99, 255, 0.12);
+        color: var(--admin-accent);
+        border: 1px solid rgba(108, 99, 255, 0.2);
+    }
+
+    .btn-admin-view:hover {
+        background: var(--admin-accent);
+        color: #fff;
+        border-color: var(--admin-accent);
+    }
+
+    /* ── Search bar ── */
+    .admin-search {
+        background: var(--admin-surface-2);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        padding: 0.45rem 0.85rem;
+        color: var(--admin-text);
+        font-size: 0.85rem;
+        outline: none;
+        width: 220px;
+        transition: border-color 0.2s;
+    }
+
+    .admin-search:focus {
+        border-color: var(--admin-accent);
+        background: rgba(108, 99, 255, 0.06);
+    }
+
+    .admin-search::placeholder {
+        color: var(--admin-muted);
+    }
+
+    /* ── Danger zone ── */
+    .danger-zone {
+        background: rgba(255, 71, 87, 0.06);
+        border: 1px solid rgba(255, 71, 87, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .danger-zone h4 {
+        color: var(--admin-danger);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .danger-zone p {
+        color: var(--admin-muted);
+        font-size: 0.82rem;
+        margin-bottom: 1rem;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--admin-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--admin-surface-2);
+        border-radius: 3px;
+    }
+
+    /* ── Empty state ── */
+    .empty-admin {
+        text-align: center;
+        padding: 3rem;
+        color: var(--admin-muted);
+    }
+
+    .empty-admin i {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+</style>
+
+<div class="admin-wrapper">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h1>⚡ Admin Panel</h1>
+                <span class="badge-admin">Super Admin</span>
+            </div>
+            <p style="color:var(--admin-muted); font-size:0.82rem; margin:0.3rem 0 0;">
+                Logged in as <strong style="color:var(--admin-text);">{{ current_user.username }}</strong>
+                &nbsp;·&nbsp; {{ now.strftime('%B %d, %Y') }}
+            </p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn-admin btn-admin-view">
+            <i class="bi bi-house-door"></i> Back to Site
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card users">
+            <i class="bi bi-people-fill stat-icon"></i>
+            <div class="stat-value">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card posts">
+            <i class="bi bi-file-earmark-text-fill stat-icon"></i>
+            <div class="stat-value">{{ total_posts }}</div>
+            <div class="stat-label">Total Posts</div>
+        </div>
+        <div class="stat-card comments">
+            <i class="bi bi-chat-dots-fill stat-icon"></i>
+            <div class="stat-value">{{ total_comments }}</div>
+            <div class="stat-label">Total Comments</div>
+        </div>
+        <div class="stat-card activity">
+            <i class="bi bi-graph-up-arrow stat-icon"></i>
+            <div class="stat-value">{{ recent_posts }}</div>
+            <div class="stat-label">Posts This Week</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+        <button class="admin-tab active" onclick="showTab('users', this)">
+            <i class="bi bi-people"></i> Users
+        </button>
+        <button class="admin-tab" onclick="showTab('posts', this)">
+            <i class="bi bi-journal-text"></i> Posts
+        </button>
+        <button class="admin-tab" onclick="showTab('comments', this)">
+            <i class="bi bi-chat-dots"></i> Comments
+        </button>
+    </div>
+
+    <!-- ── Users Panel ── -->
+    <div id="panel-users" class="admin-panel active">
+        <div class="admin-table-wrap">
+            <div class="admin-table-header">
+                <h3><i class="bi bi-people" style="color:var(--admin-accent); margin-right:0.5rem;"></i>All Users</h3>
+                <input class="admin-search" type="text" placeholder="🔍  Search users…"
+                    oninput="filterTable('users-tbody', this.value)">
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Posts</th>
+                        <th>Comments</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">{{ user.username[0].upper() }}</div>
+                                <div>
+                                    <div style="font-weight:600; color:#fff;">{{ user.username }}</div>
+                                    {% if user.id == current_user.id %}
+                                    <div style="font-size:0.7rem; color:var(--admin-accent);">You</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td style="color:var(--admin-muted);">{{ user.email }}</td>
+                        <td><span style="color:#fff; font-weight:600;">{{ user.posts|length }}</span></td>
+                        <td><span style="color:#fff; font-weight:600;">{{ user.comments|length }}</span></td>
+                        <td style="color:var(--admin-muted);">{{ user.created_at.strftime('%b %d, %Y') if
+                            user.created_at else '—' }}</td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                                <a href="{{ url_for('profile', user_id=user.id) }}" class="btn-admin btn-admin-view">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                {% if user.id != current_user.id %}
+                                <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}"
+                                    onsubmit="return confirm('Delete user {{ user.username }} and ALL their content? This cannot be undone.');">
+                                    <button type="submit" class="btn-admin btn-admin-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-admin"><i class="bi bi-people"></i> No users found.</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ── Posts Panel ── -->
+    <div id="panel-posts" class="admin-panel">
+        <div class="admin-table-wrap">
+            <div class="admin-table-header">
+                <h3><i class="bi bi-journal-text" style="color:var(--admin-accent-2); margin-right:0.5rem;"></i>All
+                    Posts</h3>
+                <input class="admin-search" type="text" placeholder="🔍  Search posts…"
+                    oninput="filterTable('posts-tbody', this.value)">
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Comments</th>
+                        <th>Published</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="posts-tbody">
+                    {% for post in posts %}
+                    <tr>
+                        <td style="max-width:260px;">
+                            <div
+                                style="font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                {{ post.title }}
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--admin-muted); margin-top:0.2rem;">
+                                ID #{{ post.id }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar" style="width:26px;height:26px;font-size:0.7rem;">{{
+                                    post.author.username[0].upper() }}</div>
+                                {{ post.author.username }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="chip chip-{{ post.category.lower() }}">{{ post.category }}</span>
+                        </td>
+                        <td><span style="color:#fff; font-weight:600;">{{ post.comments|length }}</span></td>
+                        <td style="color:var(--admin-muted);">{{ post.created_at.strftime('%b %d, %Y') if
+                            post.created_at else '—' }}</td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                                <a href="{{ url_for('post_detail', post_id=post.id) }}"
+                                    class="btn-admin btn-admin-view">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn-admin btn-admin-edit">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <form method="POST" action="{{ url_for('admin_delete_post', post_id=post.id) }}"
+                                    onsubmit="return confirm('Delete post: {{ post.title[:40] }}?');">
+                                    <button type="submit" class="btn-admin btn-admin-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-admin"><i class="bi bi-journal-text"></i> No posts found.</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ── Comments Panel ── -->
+    <div id="panel-comments" class="admin-panel">
+        <div class="admin-table-wrap">
+            <div class="admin-table-header">
+                <h3><i class="bi bi-chat-dots" style="color:var(--admin-accent-4); margin-right:0.5rem;"></i>All
+                    Comments</h3>
+                <input class="admin-search" type="text" placeholder="🔍  Search comments…"
+                    oninput="filterTable('comments-tbody', this.value)">
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Comment</th>
+                        <th>Author</th>
+                        <th>On Post</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="comments-tbody">
+                    {% for comment in comments %}
+                    <tr>
+                        <td style="max-width:300px;">
+                            <div
+                                style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--admin-text);">
+                                {{ comment.content[:100] }}{% if comment.content|length > 100 %}…{% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar" style="width:26px;height:26px;font-size:0.7rem;">{{
+                                    comment.commenter.username[0].upper() }}</div>
+                                {{ comment.commenter.username }}
+                            </div>
+                        </td>
+                        <td style="max-width:200px;">
+                            <a href="{{ url_for('post_detail', post_id=comment.post_id) }}"
+                                style="color:var(--admin-accent); text-decoration:none; font-size:0.83rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;">
+                                {{ comment.post.title[:40] }}{% if comment.post.title|length > 40 %}…{% endif %}
+                            </a>
+                        </td>
+                        <td style="color:var(--admin-muted);">{{ comment.created_at.strftime('%b %d, %Y') if
+                            comment.created_at else '—' }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin_delete_comment', comment_id=comment.id) }}"
+                                onsubmit="return confirm('Delete this comment?');">
+                                <button type="submit" class="btn-admin btn-admin-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-admin"><i class="bi bi-chat-dots"></i> No comments found.</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="danger-zone">
+            <h4><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</h4>
+            <p>Permanently delete ALL comments across the platform. This action cannot be undone.</p>
+            <form method="POST" action="{{ url_for('admin_delete_all_comments') }}"
+                onsubmit="return confirm('⚠️ Are you ABSOLUTELY sure? This will delete ALL comments permanently!');">
+                <button type="submit" class="btn-admin btn-admin-danger"
+                    style="padding:0.5rem 1.25rem; font-size:0.85rem;">
+                    <i class="bi bi-trash3-fill"></i> Delete All Comments
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showTab(name, btn) {
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+        document.getElementById('panel-' + name).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function filterTable(tbodyId, query) {
+        const q = query.toLowerCase();
+        document.querySelectorAll('#' + tbodyId + ' tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+</script>
+{% endblock %}

@@ -21,6 +21,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(200), nullable=False)
     bio = db.Column(db.Text, default='No bio yet.')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Admin flag - set to True for admin users
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
     
     # Relationships
     # One user can have many posts
