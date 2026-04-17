@@ -7,7 +7,7 @@
 
 **A full-stack blog platform built with Flask, featuring user authentication, CRUD operations, and advanced search capabilities.**
 
-[Live Demo](https://arman45678.pythonanywhere.com/) • [Report Bug](https://github.com/armanroot/ArticleHub/issues) • [Request Feature](https://github.com/armanroot/ArticleHub/issues)
+[Live Demo](https://arman45678.pythonanywhere.com/) • [Report Bug](https://github.com/armancore/ArticleHub/issues) • [Request Feature](https://github.com/armancore/ArticleHub/issues)
 
 </div>
 
@@ -267,7 +267,7 @@ Ensure you have the following installed:
 
 ```bash
 # Clone the repository
-git clone https://github.com/armanroot/ArticleHub.git
+git clone https://github.com/armancore/ArticleHub.git
 
 # Navigate to project directory
 cd ArticleHub
@@ -532,7 +532,7 @@ Tested on:
 
 ```bash
 # Option A: Upload via Git
-git clone https://github.com/armanroot/ArticleHub.git
+git clone https://github.com/armancore/ArticleHub.git
 
 # Option B: Upload ZIP file via web interface
 ```
@@ -621,8 +621,8 @@ Contributions are welcome! Please follow these steps:
 
 **Developer:** Arman Khan
 
-- **GitHub:** [@armanroot](https://github.com/armanroot)
-- **Project Link:** [https://github.com/armanroot/ArticleHub](https://github.com/armanroot/ArticleHub)
+- **GitHub:** [@armancore](https://github.com/armancore)
+- **Project Link:** [https://github.com/armancore/ArticleHub](https://github.com/armancore/ArticleHub)
 - **Live Demo:** [https://arman45678.pythonanywhere.com/](https://arman45678.pythonanywhere.com/)
 
 **Institution:** Texas College of Management & IT
@@ -718,7 +718,7 @@ Potential features for future versions:
 
 ### ⭐ Star this repository if you find it helpful!
 
-Made with ❤️ by [Arman](https://github.com/armanroot)
+Made with ❤️ by [Arman](https://github.com/armancore)
 
 **Texas College of Management & IT | BIT Second Year**
 
